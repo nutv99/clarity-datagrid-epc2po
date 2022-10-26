@@ -1,0 +1,39 @@
+
+<clr-datagrid [(clrDgSelected)]="selected">
+<!-- <clr-datagrid (clrDgRefresh)="getLaunches($event)" [(clrDgSelected)]="selected" [clrDgLoading]="loading"> -->
+  <clr-dg-action-bar *ngIf="selected.length">
+    <div class="btn-group">
+      <button type="button" class="btn btn-sm btn-warning-outline" (click)="onEdit()"><clr-icon shape="clock"></clr-icon> Delay</button>
+      <button type="button" class="btn btn-sm btn-danger" (click)="onAbort()" ><clr-icon shape="ban"></clr-icon> Abort</button>
+    </div>
+  </clr-dg-action-bar>
+
+  <clr-dg-column [style.width.px]="20">ID</clr-dg-column>
+  <clr-dg-column [clrDgField]="'name'">Name</clr-dg-column>
+  <clr-dg-column [clrDgField]="'rocket.name'">Rocket</clr-dg-column>
+  <clr-dg-column [clrDgField]="'lsp.name'">Provider</clr-dg-column>
+  <clr-dg-column [clrDgField]="'net'">Expected</clr-dg-column>
+  <clr-dg-column>Launch</clr-dg-column>
+  
+  <clr-dg-row *clrDgItems="let launch of response?.launches" [clrDgItem]="launch">
+  <!-- <clr-dg-row *ngFor="let launch of response?.launches" [clrDgItem]="launch"> -->
+    <clr-dg-cell>{{launch.id}}</clr-dg-cell>
+    <clr-dg-cell>{{launch.name}}</clr-dg-cell>
+    <clr-dg-cell>{{launch?.rocket?.name}}</clr-dg-cell>
+    <clr-dg-cell>{{launch?.lsp?.name}}</clr-dg-cell>
+    <clr-dg-cell>{{launch?.net | date:'medium'}}</clr-dg-cell>
+    <clr-dg-cell>
+      <button class="btn btn-sm btn-success" (click)="onLaunch(launch)" [disabled]="!canLaunch(launch)"><clr-icon shape="upload"></clr-icon> Launch</button>
+    </clr-dg-cell>
+  </clr-dg-row>
+
+  <clr-dg-placeholder>We couldn't load any launches</clr-dg-placeholder>
+
+  <clr-dg-footer>
+    {{pagination.firstItem + 1}} - {{pagination.lastItem + 1}}
+    of {{pagination.totalItems}} launches
+    <clr-dg-pagination #pagination [clrDgPageSize]="10" [clrDgTotalItems]="response?.total"></clr-dg-pagination>
+  </clr-dg-footer>
+</clr-datagrid>
+
+<app-rocket [open]="launching" [name]="name"></app-rocket>
